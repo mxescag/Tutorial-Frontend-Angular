@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CategoryService } from '../category.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryEdit } from '../category-edit/category-edit';
+import { DialogConfirmation } from '../../core/dialog-confirmation/dialog-confirmation';
 
 @Component({
   selector: 'app-category-list',
@@ -64,4 +65,19 @@ export class CategoryListPage implements OnInit {
       this.loadData();
     });
   }
+
+  deleteCategory(category: Category) {    
+    const dialogRef = this.dialog.open(DialogConfirmation, {
+      data: { title: "Eliminar categoría", description: "¡Atención! Si borra la categoría, se perderán sus datos.<br> ¿Desea eliminar la categoría?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { /* Si el resultado es verdadero (si se ha pulsado sí), se elimina la categoría. */
+        this.categoryService.deleteCategory(category.id).subscribe(result => {
+          this.loadData();
+        }); 
+      }
+    });
+  }  
+
 }
