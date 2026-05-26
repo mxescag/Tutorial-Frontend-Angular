@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class CategoryEdit implements OnInit {
   protected readonly dialogRef = inject(MatDialogRef<CategoryEdit>);
+  protected readonly data = inject(MAT_DIALOG_DATA) as { category: Category };
   protected readonly categoryService = inject(CategoryService);
 
   protected readonly id = signal<number | null>(null); /* Señal para almacenar el ID de la categoría que se está editando. 
@@ -22,13 +23,14 @@ export class CategoryEdit implements OnInit {
   protected readonly name = signal<string | null>(null); /* Señal para almacenar el nombre de la categoría que se está editando.
   Se inicializa con null, lo que indica que no se ha ingresado un nombre aún. */
 
-    ngOnInit(): void {
-        this.loadFormData();
-    }
+  ngOnInit(): void {
+    this.loadFormData(this.data.category ?? null); 
+  }
 /* Método para cargar los datos de la categoría en el formulario. */
-    loadFormData(): void { 
-        this.id.set(null);
-        this.name.set(null);
+    loadFormData(initialData: Category | null): void { 
+        this.id.set(initialData?.id ?? null); /* Si se proporciona una categoría, se establece su ID en la señal id. 
+        Si no se proporciona una categoría (es decir, se está creando una nueva categoría), se establece null. */
+        this.name.set(initialData?.name ?? null); /* Lo mismo de arriba, pero con name */
     }
 /* Método para guardar la categoría. Se llama cuando el usuario hace clic en el botón de guardar en el formulario. */
     onSave() { 

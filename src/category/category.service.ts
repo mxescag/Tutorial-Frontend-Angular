@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Category } from './model/Category';
+import { CATEGORY_DATA } from './model/mock-categories';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class CategoryService {
 
   getCategories(): Observable<Category[]> {
     // Aquí se implementaría la lógica para obtener las categorías desde un servicio o API.
-    return new Observable();
+    return of(CATEGORY_DATA); 
   }
 
   saveCategory(category: Category): Observable<Category> {
