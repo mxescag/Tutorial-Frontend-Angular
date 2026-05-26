@@ -16,31 +16,52 @@ import { CategoryEdit } from '../category-edit/category-edit';
   styleUrl: './category-list.page.scss',
 })
 export class CategoryListPage implements OnInit {
+  dataSource = new MatTableDataSource<Category>();
+  displayedColumns: string[] = ['id', 'name', 'action'];
 
-  protected readonly categoryService = inject(CategoryService); /* Aquí se inyecta el servicio de categorías para poder obtener los datos de las categorías. */
-  protected readonly dialog = inject(MatDialog); /* Aquí se inyecta el servicio de diálogo para poder abrir el diálogo de edición de categorías. */
+  protected readonly categoryService =
+    inject(CategoryService); /* Inyección del servicio de categorías para acceder a sus métodos. */
+  protected readonly dialog =
+    inject(
+      MatDialog,
+    ); /* Inyección del servicio de diálogo para abrir el formulario de edición de categorías. */
 
-  dataSource = new MatTableDataSource<Category>(); /* Aquí se almacenarán los datos que se mostrarán en la tabla. */
-  displayedColumns: string[] = ['id', 'name', 'action']; /* Aquí se definen las columnas que se mostrarán en la tabla. */
-
-  constructor() {}
-
-  /* -- DEFINIMOS MÉTODOS POR AQUÍ -- */
-
-  createCategory() {
-    const dialogRef = this.dialog.open(CategoryEdit, {
-      data:{}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(!result) return; /* Si el resultado es falso, no se hace nada. Esto puede ocurrir si el usuario cierra el diálogo sin guardar. */
-      this.loadData(); /* Si el resultado es verdadero, se recarga la lista de categorías para mostrar la nueva categoría creada. */
-    });
+  loadData(): void {
+    /* Método para cargar las categorías desde el servicio y actualizar la tabla. */
+    this.categoryService
+      .getCategories()
+      .subscribe((categories) => (this.dataSource.data = categories));
   }
 
   ngOnInit(): void {
-    this.categoryService.getCategories().subscribe((categories) => {
-      this.dataSource.data = categories; /* Aquí se asignan los datos obtenidos al dataSource para que se muestren en la tabla. */
+    /* Método del ciclo de vida del componente que se ejecuta al inicializar el componente. Aquí se llama al método loadData para cargar las categorías. */
+    this.loadData();
+  }
+
+  createCategory() {
+    /* Método para abrir el formulario de creación de una nueva categoría. 
+    Se utiliza el servicio de diálogo para abrir el componente CategoryEdit. */
+    const dialogRef = this.dialog.open(CategoryEdit, {
+      data: {} /* Se pueden pasar datos al componente de edición si es necesario, en este caso se pasa un objeto vacío para indicar que se está creando una nueva categoría. */,
     });
-  } /* Aquí se pueden cargar los datos desde un servicio o API. */
+    /* Después de cerrar el diálogo, se recarga la lista de categorías si se ha guardado una nueva categoría. */
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result)
+        return; /* Si el resultado es falso, no se hace nada. Esto puede ocurrir si el usuario cancela la operación de creación. */
+      this.loadData(); /* Si se ha guardado una nueva categoría, se llama al método loadData para actualizar la tabla con la nueva categoría. */
+    });
+  }
+
+  editCategory(category: Category) {
+    /* Método para abrir el formulario de edición de una categoría existente. Se recibe la categoría a editar como parámetro. */
+    const dialogRef = this.dialog.open(CategoryEdit, {
+      data: { category },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      /* Después de cerrar el diálogo, se recarga la lista de categorías si se ha guardado la categoría editada. */
+      if (!result) return;
+      this.loadData();
+    });
+  }
 }
