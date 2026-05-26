@@ -7,6 +7,9 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
+
+/* RECUERDA: en la capa de SERVICIO es donde se realizan las operaciones de recuperación, guardado y toda la pesca. */
+
 export class CategoryService {
   /*  -- INYECCIONES --*/
 
@@ -25,10 +28,18 @@ export class CategoryService {
   }
 
   saveCategory(category: Category): Observable<Category> {
-    return of(null);
+    const { id } = category; /* Extraemos el id de la categoría que queremos guardar. */
+    let url;
+    if (id) { /* Si el id existe, significa que estamos actualizando una categoría existente, por lo que construimos la URL para actualizar esa categoría específica. */
+      url = `${this.baseUrl}/${id}`; 
+    } 
+    return this.http.put<Category>(url, category); /* Si el id no existe, 
+    significa que estamos creando una nueva categoría, 
+    por lo que utilizamos la URL base para crear una nueva categoría. */
+
   }
 
   deleteCategory(idCategory: number): Observable<any> {
-    return of(null);
+    return this.http.delete(`${this.baseUrl}/${idCategory}`); /* Esto hace una solicitud HTTP DELETE a la URL construida con el id de la categoría que queremos eliminar. */
   }
 }
