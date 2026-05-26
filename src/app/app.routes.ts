@@ -6,5 +6,10 @@ export const routes: Routes = [
      - path: cómo se llamará en URL
      - loadComponent: () : función anónima que importará la página de category-list 
      - .then() : entonces, una vez esté importada, se utilizará el componente que está en esa clase */
-    { path: 'categories', loadComponent: () => import('../category/category-list/category-list.page').then(m => m.CategoryListPage)}
+    { path: 'categories', 
+        loadComponent: () => import('../category/category-list/category-list.page').then(m => m.CategoryListPage)},
+    {
+        path: 'authors',
+        loadComponent: () => import ('../author/author-list/author-list.page').then(m => m.AuthorListPage)
+    }
 ];
