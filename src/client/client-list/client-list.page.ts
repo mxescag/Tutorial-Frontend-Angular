@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ClientEdit } from '../client-edit/client-edit';
 import { DialogConfirmation } from '../../core/dialog-confirmation/dialog-confirmation';
 import da from '@angular/common/locales/da';
+import { CdkAriaLive } from "../../../node_modules/@angular/cdk/types/_a11y-module-chunk";
 
 @Component({
   selector: 'app-client-list',
