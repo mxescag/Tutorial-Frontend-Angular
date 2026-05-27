@@ -29,7 +29,7 @@ export class CategoryService {
 
   saveCategory(category: Category): Observable<Category> {
     const { id } = category; /* Extraemos el id de la categoría que queremos guardar. */
-    let url;
+    let url = this.baseUrl; /* Importante!! Inicializar la URL con la baseUrl. Si no, dará error al guardar */
     if (id) { /* Si el id existe, significa que estamos actualizando una categoría existente, por lo que construimos la URL para actualizar esa categoría específica. */
       url = `${this.baseUrl}/${id}`; 
     } 

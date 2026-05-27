@@ -11,7 +11,7 @@ import { validateFields } from '../../core/helpers/validation.helper';
 @Component({
     selector: 'app-author-edit',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule ],
     templateUrl: './author-edit.html',
     styleUrl: './author-edit.scss',
 })
@@ -23,12 +23,13 @@ export class AuthorEdit implements OnInit {
     protected readonly id = signal<number | null>(null);
     protected readonly name = signal<string | null>(null);
     protected readonly nationality = signal<string | null>(null);
-author: any;
 
     loadFormData(initialData: Author | null) {
+        if(initialData){
         this.id.set(initialData.id ?? null);
         this.name.set(initialData.name ?? null);
         this.nationality.set(initialData.nationality ?? null);
+        }
     }
 
     ngOnInit(): void {
