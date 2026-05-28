@@ -5,15 +5,18 @@ import { Loan } from '../model/Loan';
 import { Game } from '../../game/model/Game';
 import { Client } from '../../client/model/Client'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select'
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { validateFields } from '../../core/helpers/validation.helper';
+import { GameService } from '../../game/game.service';
+import { ClientService } from '../../client/client.service';
 
 @Component({
     selector: 'app-loan-edit',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule ],
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule],
     templateUrl: './loan-edit.html',
     styleUrl: './loan-edit.scss',
 })
@@ -22,6 +25,15 @@ export class LoanEdit implements OnInit {
     protected readonly dialogRef = inject(MatDialogRef<LoanEdit>);
     protected readonly data = inject(MAT_DIALOG_DATA);
 
+    /* Inyectamos las listas de juegos y de clientes para que se carguen al iniciar la página */
+
+    /* Señales que almacenan listas de juegos y clientes disponibles para el combo seleccionable */
+    protected readonly games = signal<Game[]>([]); // Señal que contiene array de objetos Game, array está vacío al cargar
+    protected readonly clients = signal<Client[]>([]); // Misma señal que arriba, pero con Client
+
+    protected readonly gameService = inject(GameService);
+    protected readonly clientService = inject(ClientService);
+
 
     protected readonly id = signal<number | null>(null);
     protected readonly game = signal<Game | null>(null);
@@ -29,6 +41,7 @@ export class LoanEdit implements OnInit {
     protected readonly startDate = signal<string | null>(null);
     protected readonly endDate = signal<string | null>(null);
 
+    /* Atributo que devolverá error si las fechas no cumplen */
     protected readonly dateError = signal<string | null>(null);
 
 
@@ -44,6 +57,10 @@ export class LoanEdit implements OnInit {
 
     ngOnInit(): void {
         this.loadFormData(this.data.loan ?? null);
+        
+        /* Cargamos las listas de juegos y clientes */
+        this.gameService.getGames().subscribe(games => this.games.set(games)); // Cuando el backend responde, se rellenan con el .set()
+        this.clientService.getClients().subscribe(clients => this.clients.set(clients)) // Mismo que arriba
     }
 
     onSave() {

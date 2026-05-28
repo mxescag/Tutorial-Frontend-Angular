@@ -13,13 +13,19 @@
 
         <mat-form-field>
             <mat-label>Nombre del juego</mat-label>
-            <input type=[value] matInput placeholder="Nombre del juego" [ngModel]="game()?.name" (ngModelChange)="game.set($event)" name="game" required>
-            <mat-error>El nombre del juego no puede estar vacío</mat-error>
+            <mat-select [value]="game()" (selectionChange)="game.set($event.value)">
+                @for (game of games(); track game.id) {
+                    <mat-option [value]="game"> {{ game.title }}</mat-option>
+                }
+            </mat-select>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Nombre del cliente</mat-label>
-            <input type=[value] matInput placeholder="Nombre del juego" [ngModel]="client()?.name" (ngModelChange)="client.set($event)" name="client" required>
-            <mat-error>El nombre del cliente no puede estar vacío</mat-error>
+            <mat-select [value]="client()" (selectionChange)="client.set($event.value)">
+                @for (client of clients(); track client.id) {
+                    <mat-option [value]="client"> {{ client.name }}</mat-option>
+                }
+            </mat-select>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Fecha de préstamo</mat-label>
