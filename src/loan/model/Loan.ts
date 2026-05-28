@@ -5,6 +5,7 @@ export interface Loan {
     id: number;
     client: Client;
     game: Game;
-    startDate: Date;
-    endDate: Date;
+    /* Las fechas las ponemos como string porque String(backend) deserializa LocalDate como string */
+    startDate: string;
+    endDate: string; 
 }
