@@ -122,7 +122,6 @@ export class LoanListPage implements OnInit {
   }
 
   /* Función para limpiar filtro */
-
   clean() {
     /* Settea todos los filtros a null y lo deja limpio */
     this.filterTitle.set(null);
