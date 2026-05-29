@@ -20,7 +20,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { D } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-loan-list',
@@ -61,8 +60,8 @@ export class LoanListPage implements OnInit {
 
   /* Filtros para títulos, juegos y fechas */
   protected readonly filterClient = signal<Client | null>(null);
-  protected readonly filterTitle = signal<string>('');
-  protected readonly filterDate = signal<string | null>(null)
+  protected readonly filterTitle = signal<Game | null>(null);
+  protected readonly filterDate = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadPage();
@@ -111,7 +110,11 @@ export class LoanListPage implements OnInit {
     };
 
     /* Envía la petición al backend con el objeto pageable. */
-    this.loanService.getLoans(pageable).subscribe((data) => { /* Cuando llegue la respuesta... */
+    this.loanService.getLoans(pageable,
+      this.filterTitle()?.id ?? null, // id del juego seleccionado
+      this.filterClient()?.id ?? null, // id cliente selec
+      this.filterDate() ?? null // fecha selec
+    ).subscribe((data) => { /* Cuando llegue la respuesta... */
       this.dataSource.data = data.content; // Mete los préstamos recibidos en el datsource de la tabla
       this.pageNumber = 0; // vuelve a la primer página
       this.totalElements = data.totalElements; // le dice al paginador cuántos resultados en total hay
