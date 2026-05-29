@@ -17,6 +17,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { D } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-loan-list',
@@ -31,6 +35,8 @@ import { FormsModule } from '@angular/forms';
     MatFormField,
     MatLabel,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule, MatInputModule
   ],
   templateUrl: './loan-list.page.html',
   styleUrl: './loan-list.page.scss',
@@ -56,6 +62,7 @@ export class LoanListPage implements OnInit {
   /* Filtros para títulos, juegos y fechas */
   protected readonly filterClient = signal<Client | null>(null);
   protected readonly filterTitle = signal<string>('');
+  protected readonly filterDate = signal<string | null>(null)
 
   ngOnInit(): void {
     this.loadPage();
@@ -87,6 +94,38 @@ export class LoanListPage implements OnInit {
       this.pageSize = data.pageable.pageSize;
       this.totalElements = data.totalElements;
     });
+  }
+
+  /* Función para filtrar */
+  filter() {
+    /* Crea un objeto con las instrucciones de paginación */
+    const pageable: Pageable = {
+      pageNumber: 0, // al filtrar se empieza por la primera pág
+      pageSize: this.pageSize, // cuántos elementos por pág
+      sort: [ 
+        { // ordena los resultados por id ascendente
+          property: 'id',
+          direction: 'ASC',
+        },
+      ],
+    };
+
+    /* Envía la petición al backend con el objeto pageable. */
+    this.loanService.getLoans(pageable).subscribe((data) => { /* Cuando llegue la respuesta... */
+      this.dataSource.data = data.content; // Mete los préstamos recibidos en el datsource de la tabla
+      this.pageNumber = 0; // vuelve a la primer página
+      this.totalElements = data.totalElements; // le dice al paginador cuántos resultados en total hay
+    });
+  }
+
+  /* Función para limpiar filtro */
+
+  clean() {
+    /* Settea todos los filtros a null y lo deja limpio */
+    this.filterTitle.set(null);
+    this.filterClient.set(null);
+    this.filterDate.set(null);
+    this.filter();
   }
 
   createLoan() {
