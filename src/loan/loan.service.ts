@@ -13,8 +13,13 @@ export class LoanService {
   private baseUrl = 'http://localhost:8080/loan';
 
 
-  getLoans(pageable: Pageable): Observable<PaginatedData<Loan>> {
-    return this.http.post<PaginatedData<Loan>>(this.baseUrl, {pageable: pageable})
+  /* En esta función, los ? significan que los parámetros que lo lleven son opcionales. */
+  getLoans(pageable: Pageable, title?: string, clientId?: number, date?: string): Observable<PaginatedData<Loan>> {
+    return this.http.post<PaginatedData<Loan>>(this.baseUrl, {pageable,
+      title: title ?? null, // Si title es undefined, envía null
+      clientId: clientId ?? null, // Ídem
+      date: date ?? null // Ídem
+    });
   }
 
 
